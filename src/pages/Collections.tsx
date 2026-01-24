@@ -33,8 +33,9 @@ const Collections = () => {
               animate={{ opacity: 1, y: 0 }}
               className="inline-flex items-center gap-2 px-4 py-2 bg-card border border-border rounded-full mb-6"
             >
-              <Crown className="h-4 w-4 text-accent-foreground" />
-              <span className="text-sm font-medium text-accent-foreground">Exclusive Collection</span>
+            <Crown className="h-4 w-4 text-black" />
+            <span className="text-sm font-medium text-black">Exclusive Collection</span>
+
             </motion.div>
             
             <motion.h1
