@@ -18,8 +18,9 @@ export const MostSellingProducts = () => {
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-accent rounded-full mb-4">
             <TrendingUp className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium text-primary">Trending Now</span>
+          <span className="text-sm font-medium text-gray-900">Trending Now</span>
           </div>
+
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold mb-4">
             <span className="text-foreground">Most</span>{' '}
             <span className="text-gradient">Selling</span>
