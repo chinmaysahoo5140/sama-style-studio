@@ -31,7 +31,7 @@ export const Header = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20">
           <Link to="/" className="flex items-center">
-            <motion.span whileHover={{ scale: 1.05 }} className="text-2xl md:text-3xl font-display font-bold text-gradient">
+            <motion.span whileHover={{ scale: 1.05 }}className="text-2xl md:text-3xl font-display font-semibold tracking-widest bg-clip-text text-transparent" style={{ backgroundImage: "var(--gradient-gold)" }}>
               SAMA
             </motion.span>
           </Link>
