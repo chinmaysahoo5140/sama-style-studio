@@ -26,7 +26,7 @@ const Privacy = () => {
               transition={{ delay: 0.1 }}
               className="text-muted-foreground"
             >
-              Last updated: January 2024
+              Last updated: January 2026
             </motion.p>
           </div>
         </section>
