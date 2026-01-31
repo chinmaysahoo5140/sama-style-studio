@@ -65,15 +65,15 @@ const Collections = () => {
               className="flex items-center justify-center gap-8 mt-10"
             >
               <div className="flex items-center gap-2">
-                <Gem className="h-5 w-5 text-primary" />
+                <Gem className="h-5 w-5 text-accent" />
                 <span className="text-sm text-muted-foreground">Handcrafted</span>
               </div>
               <div className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-primary" />
+                <Sparkles className="h-5 w-5 text-accent" />
                 <span className="text-sm text-muted-foreground">Limited Edition</span>
               </div>
               <div className="flex items-center gap-2">
-                <Crown className="h-5 w-5 text-primary" />
+                <Crown className="h-5 w-5 text-accent" />
                 <span className="text-sm text-muted-foreground">Premium Materials</span>
               </div>
             </motion.div>
