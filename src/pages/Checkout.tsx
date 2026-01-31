@@ -241,7 +241,7 @@ const Checkout = () => {
                       name="fullName"
                       value={address.fullName}
                       onChange={handleInputChange}
-                      placeholder="John Doe"
+                      placeholder="Full Name"
                     />
                   </div>
 
