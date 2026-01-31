@@ -30,7 +30,7 @@ export const HeroSection = () => {
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full">
               <Star className="h-4 w-4 text-gold fill-gold" />
-              <span className="text-sm font-medium text-primary">New Collection 2024</span>
+              <span className="text-sm font-medium text-primary">New Collection 2026</span>
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-display font-bold leading-tight">

@@ -22,7 +22,7 @@ export const PromoStrip = () => {
               transition={{ delay: index * 0.1 }}
               className="flex items-center gap-2"
             >
-              <item.icon className="h-5 w-5 text-primary" />
+              <item.icon className="h-5 w-5 text-accent" />
               <span className="text-sm font-medium text-foreground">{item.text}</span>
             </motion.div>
           ))}
