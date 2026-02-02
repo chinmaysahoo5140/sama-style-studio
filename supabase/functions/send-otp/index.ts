@@ -6,6 +6,10 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// Rate limiting constants
+const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
+const MAX_OTP_REQUESTS_PER_WINDOW = 3;
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -51,6 +55,35 @@ serve(async (req) => {
       return new Response(
         JSON.stringify({ error: "Phone number is required" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Validate phone number format (basic validation)
+    const phoneRegex = /^\+?[1-9]\d{9,14}$/;
+    if (!phoneRegex.test(phone.replace(/\s/g, ''))) {
+      return new Response(
+        JSON.stringify({ error: "Invalid phone number format" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Rate limiting check - count recent OTP requests for this user
+    const rateLimitCutoff = new Date(Date.now() - RATE_LIMIT_WINDOW_MS).toISOString();
+    
+    const { data: recentOtps, error: rateLimitError } = await supabaseClient
+      .from("otp_verifications")
+      .select("created_at")
+      .eq("user_id", user.id)
+      .gte("created_at", rateLimitCutoff);
+
+    if (rateLimitError) {
+      console.error("Rate limit check error:", rateLimitError);
+      // Continue anyway - don't block on rate limit errors
+    } else if (recentOtps && recentOtps.length >= MAX_OTP_REQUESTS_PER_WINDOW) {
+      console.log(`Rate limit exceeded for user ${user.id}: ${recentOtps.length} requests in window`);
+      return new Response(
+        JSON.stringify({ error: "Too many OTP requests. Please wait a minute before trying again." }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
@@ -101,6 +134,8 @@ serve(async (req) => {
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
+
+    console.log(`OTP sent successfully to ${phone.slice(0, 4)}****`);
 
     return new Response(
       JSON.stringify({ success: true, message: "OTP sent successfully" }),

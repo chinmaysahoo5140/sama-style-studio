@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Package, Truck, CheckCircle, Clock, Loader2, MapPin, CreditCard, Box } from 'lucide-react';
+import { Search, Package, Truck, CheckCircle, Loader2, CreditCard, Box } from 'lucide-react';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { CartDrawer } from '@/components/cart/CartDrawer';
@@ -10,14 +10,13 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { format } from 'date-fns';
 
-interface OrderData {
+// Only expose non-sensitive order data for public tracking
+interface OrderTrackingData {
   id: string;
   tracking_id: string;
   status: string;
-  total: number;
   created_at: string;
-  items: any[];
-  shipping_address: any;
+  updated_at: string;
 }
 
 interface StatusHistory {
@@ -39,7 +38,7 @@ const statusSteps = [
 const TrackOrder = () => {
   const [trackingId, setTrackingId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [order, setOrder] = useState<OrderData | null>(null);
+  const [order, setOrder] = useState<OrderTrackingData | null>(null);
   const [statusHistory, setStatusHistory] = useState<StatusHistory[]>([]);
   const [notFound, setNotFound] = useState(false);
 
@@ -56,10 +55,10 @@ const TrackOrder = () => {
     setStatusHistory([]);
 
     try {
-      // Fetch order by tracking_id
+      // Fetch order from the secure order_tracking view (only exposes non-sensitive data)
       const { data: orderData, error: orderError } = await supabase
-        .from('orders')
-        .select('*')
+        .from('order_tracking')
+        .select('id, tracking_id, status, created_at, updated_at')
         .eq('tracking_id', trackingId.trim().toUpperCase())
         .maybeSingle();
 
@@ -72,12 +71,12 @@ const TrackOrder = () => {
         return;
       }
 
-      setOrder(orderData as OrderData);
+      setOrder(orderData as OrderTrackingData);
 
       // Fetch status history
       const { data: historyData, error: historyError } = await supabase
         .from('order_status_history')
-        .select('*')
+        .select('id, status, message, created_at')
         .eq('order_id', orderData.id)
         .order('created_at', { ascending: true });
 
@@ -187,25 +186,15 @@ const TrackOrder = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                  <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
                       <p className="text-muted-foreground">Order Date</p>
                       <p className="font-medium">{format(new Date(order.created_at), 'MMM d, yyyy')}</p>
                     </div>
                     <div>
-                      <p className="text-muted-foreground">Total Amount</p>
-                      <p className="font-medium">₹{order.total.toLocaleString()}</p>
+                      <p className="text-muted-foreground">Last Updated</p>
+                      <p className="font-medium">{format(new Date(order.updated_at), 'MMM d, yyyy')}</p>
                     </div>
-                    <div>
-                      <p className="text-muted-foreground">Items</p>
-                      <p className="font-medium">{order.items?.length || 0} item(s)</p>
-                    </div>
-                    {order.shipping_address && (
-                      <div>
-                        <p className="text-muted-foreground">Delivery City</p>
-                        <p className="font-medium">{order.shipping_address.city || 'N/A'}</p>
-                      </div>
-                    )}
                   </div>
                 </div>
 
@@ -259,21 +248,6 @@ const TrackOrder = () => {
                     })}
                   </div>
                 </div>
-
-                {/* Shipping Address */}
-                {order.shipping_address && (
-                  <div className="bg-card rounded-xl p-6 border border-border">
-                    <div className="flex items-center gap-2 mb-4">
-                      <MapPin className="h-5 w-5 text-primary" />
-                      <h3 className="text-lg font-semibold">Delivery Address</h3>
-                    </div>
-                    <div className="text-muted-foreground">
-                      <p className="font-medium text-foreground">{order.shipping_address.fullName}</p>
-                      <p>{order.shipping_address.address}</p>
-                      <p>{order.shipping_address.city}, {order.shipping_address.state} - {order.shipping_address.pincode}</p>
-                    </div>
-                  </div>
-                )}
               </motion.div>
             )}
 
