@@ -41,6 +41,13 @@ export type Database = {
             foreignKeyName: "order_status_history_order_id_fkey"
             columns: ["order_id"]
             isOneToOne: false
+            referencedRelation: "order_tracking"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_status_history_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
             referencedRelation: "orders"
             referencedColumns: ["id"]
           },
@@ -228,7 +235,30 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      order_tracking: {
+        Row: {
+          created_at: string | null
+          id: string | null
+          status: string | null
+          tracking_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string | null
+          status?: string | null
+          tracking_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string | null
+          status?: string | null
+          tracking_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       generate_tracking_id: { Args: never; Returns: string }
