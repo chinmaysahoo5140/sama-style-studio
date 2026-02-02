@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, Link, Outlet, useLocation } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
   LayoutDashboard, 
@@ -9,13 +9,12 @@ import {
   LogOut, 
   Menu,
   X,
-  TrendingUp,
   IndianRupee,
-  PackageCheck,
   Eye
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/context/AuthContext';
 
 const sidebarLinks = [
   { name: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
@@ -39,20 +38,12 @@ const recentOrders = [
 ];
 
 const AdminDashboard = () => {
-  const navigate = useNavigate();
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { signOut } = useAuth();
 
-  useEffect(() => {
-    const isAdmin = sessionStorage.getItem('sama-admin');
-    if (!isAdmin) {
-      navigate('/admin');
-    }
-  }, [navigate]);
-
-  const handleLogout = () => {
-    sessionStorage.removeItem('sama-admin');
-    navigate('/admin');
+  const handleLogout = async () => {
+    await signOut();
   };
 
   const getStatusColor = (status: string) => {
